@@ -1,0 +1,151 @@
+# ref: https://docs.ergogen.xyz/
+# tut: https://flatfootfox.com/ergogen-introduction/
+
+units:
+  # we want choc keys
+  kx: cx
+  ky: cy
+
+  # 2 mm padding between keys
+  px: kx + 3
+  py: ky + 3
+
+  # controller size and distance to the keys
+  mcu_width: 18
+  mcu_height: 34
+  mcu_padding: 7
+
+  # trackpoint -- just the joystick part; the controller board will be glued to the backside of the shield
+  trackpoint_width: 23
+  trackpoint_height: 20
+  trackpoint_stagger: 3
+
+points:
+  zones:
+
+    # 6x4 matrix, plus 2 function keys
+    matrix:
+      # chock spacing
+      key:
+        padding: ky
+        spread: kx
+        tags: [switch]
+
+      columns:
+        outer.key.splay: 2.6
+        pinky.key:
+          stagger: 1
+          splay: -.3
+        ring.key:
+          stagger: 4
+          splay: -1.3
+        middle.key.stagger: 1.7
+        index.key:
+          stagger: -1.7
+          splay: -.3
+        inner.key:
+          stagger: -2.9
+          splay: -.7
+        # only two function keys in the innest column
+        innest:
+          key.stagger: -ky * .5
+          rows.top: $unset
+          rows.number: $unset
+
+      rows:
+        bottom:
+        home:
+        top:
+        number:
+
+    # thumb cluster with four modifier keys
+    thumb:
+      anchor:
+        ref: matrix_pinky_bottom
+        shift: [.5 kx, -py]
+      key.tags: [switch]
+      rows.mod:
+      columns:
+        ring.key.splay: 7
+        middle.key.splay: -6.6
+        index.key.splay: -1.2
+        # space for a trackpoint
+        inner.rows.mod.skip: true
+        # the innest one is offset and rotated
+        innest.key:
+          splay: -27
+          shift: [.7 kx, -20]
+
+    # board components
+    mcu:
+      anchor:
+        - ref: matrix_innest_bottom
+          affect: xr
+          shift: mcu_padding
+        - ref: matrix_middle_number
+          affect: y
+          shift: (ky-mcu_height)/2
+      rows.mcu:
+      columns.mcu.key:
+        tags: [mcu]
+
+    trackpoint:
+      anchor:
+        aggregate.parts: [thumb_innest_mod, thumb_index_mod]
+        affect: xy
+        shift: [0, trackpoint_stagger]
+      rows.tp:
+      columns.tp.key:
+        tags: [trackpoint]
+
+outlines:
+  keys:
+    - what: rectangle
+      where: [switch]
+      size: [kx - .5, ky - .5]
+
+  board:
+    - what: polygon
+      fillet: 2
+      points:
+        # top
+        - ref: matrix_outer_number
+          shift: [-px/2, py/2]
+        - ref: matrix_ring_number
+          shift: [-px/2, py/2]
+        - ref: matrix_middle_number
+          shift: [-px/2, py/2]
+        - ref: mcu_mcu_mcu
+          shift: [mcu_width/2 + 2, mcu_height/2 + 1]
+
+        # right
+        - ref: matrix_innest_home
+          affect: y
+        - ref: thumb_innest_mod
+          shift: [px/2, py/2]
+        - ref: thumb_innest_mod
+          shift: [px/2, -py/2]
+
+        #bottom
+        - ref: thumb_innest_mod
+          shift: [-px/2, -py/2]
+        - ref: thumb_middle_mod
+          shift: [px/2, -py/2 - 3]
+        - ref: thumb_ring_mod
+          shift: [px/2, -py/2]
+        - ref: thumb_ring_mod
+          shift: [-px/2, -py/2]
+        - ref: matrix_outer_bottom
+          shift: [-px/2, -py/2]
+
+  preview:
+    - board
+    - -keys
+    - what: rectangle
+      where: [mcu]
+      size: [mcu_width, mcu_height]
+      operation: subtract
+    - what: rectangle
+      where: [trackpoint]
+      size: [trackpoint_width, trackpoint_height]
+      operation: subtract
