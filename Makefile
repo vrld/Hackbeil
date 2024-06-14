@@ -1,16 +1,23 @@
 .PHONY: all clean watch
 
-SRC=hackbeil.yaml
+SRC=config.yaml
+SRC+=$(wildcard footprints/*)
 
-all: build preview
+all: build/pcbs/hackbeil.kicad_pcb preview
 
-build: $(SRC)
-	ergogen $^ -o $@
+preview: build/pcbs/hackbeil-left.pdf build/pcbs/hackbeil-right.pdf
 
-preview: $(patsubst %.dxf,%.png,$(wildcard build/**/*.dxf))
+build/pcbs/hackbeil.kicad_pcb: $(SRC)
+	ergogen . -o build
 
-%.png : %.dxf
+%.png: %.dxf
 	inkscape -Do $@ -y 1 $<
+
+%-left.pdf: %.kicad_pcb
+	kicad-cli pcb export pdf -o $@ -l "F.Cu,F.Silkscreen,User.Drawings,Edge.Cuts" $<
+
+%-right.pdf: %.kicad_pcb
+	kicad-cli pcb export pdf -o $@ -m -l "B.Cu,B.Silkscreen,User.Drawings,Edge.Cuts" $<
 
 watch: $(SRC)
 	ls $^ | entr -n make

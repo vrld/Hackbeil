@@ -1,8 +1,8 @@
-# Hackbeil (/ˈhɛkˌbaɪ̯l/)
+# Hackbeil (/ˈhakˌbaɪ̯l/)
 
-My custom 60 key wireless split keyboard. (Will be) Built with [ergogen](https://ergogen.xyz) and [zmk](https://zmk.dev).
+My custom 60 key wireless split keyboard. Inspired by [Lily58](https://github.com/kata0510/Lily58). (Will be) Built with [ergogen](https://ergogen.xyz) and [zmk](https://zmk.dev).
 
-![ergogen rendering](build/outlines/preview.png)
+![screenshot of the pcb, not yet routed](preview.png)
 
 ## Setup
 

@@ -1,0 +1,300 @@
+# ref: https://docs.ergogen.xyz/
+# tut: https://flatfootfox.com/ergogen-introduction/
+meta:
+  engine: "4.1.0"
+
+units:
+  # we want choc keys
+  kx: cx
+  ky: cy
+
+  # 2 mm padding between keys
+  px: kx + 3
+  py: ky + 3
+
+  # controller size and distance to the keys
+  mcu_width: 18
+  mcu_height: 34
+  mcu_padding: 5
+
+  # trackpoint -- just the joystick part; the controller board will be glued to the backside of the shield
+  trackpoint_width: 23
+  trackpoint_height: 19
+  trackpoint_stagger: 7
+  trackpoint_offset: -.5
+  trackpoint_bottom_to_stick: 11
+
+points:
+  zones:
+
+    # 6x4 matrix, plus 2 function keys
+    matrix:
+      anchor.shift: [130, -130]
+
+      # chock spacing
+      key:
+        padding: ky
+        spread: kx
+        tags: [switch]
+
+      columns:
+        outer.key:
+          splay: 2.6
+          column_net: COL0
+        pinky.key:
+          stagger: 1
+          splay: -.3
+          column_net: COL1
+        ring.key:
+          stagger: 4
+          splay: -1.3
+          column_net: COL2
+        middle.key:
+          stagger: 1.7
+          column_net: COL3
+        index.key:
+          stagger: -1.7
+          splay: -.3
+          column_net: COL4
+        inner.key:
+          stagger: -2.9
+          splay: -.7
+          column_net: COL5
+        # only two function keys in the innest column
+        innest:
+          rows:
+            number: $unset
+            top: $unset
+            home:
+              row_net: ROW4
+              column_net: COL5
+            bottom:
+              row_net: ROW4
+              column_net: COL4
+          key:
+            stagger: -ky * .3
+
+      rows:
+        bottom.row_net: ROW3
+        home:
+          tags: [switch, diode_bottom]
+          row_net: ROW2
+        top.row_net: ROW1
+        number:
+          row_net: ROW0
+          tags: [switch, diode_bottom]
+
+    # thumb cluster with four modifier keys
+    thumb:
+      anchor:
+        ref: matrix_pinky_bottom
+        shift: [.5 kx, -py]
+      key.tags: [switch]
+      rows.mod.row_net: ROW4
+      columns:
+        ring.key:
+          splay: 7
+          column_net: COL0
+        middle.key:
+          splay: -6.6
+          column_net: COL1
+        index.key:
+          splay: -1.2
+          column_net: COL2
+        # space for a trackpoint
+        inner.rows.mod.skip: true
+        # the innest one is offset and rotated
+        innest.key:
+          splay: -32
+          shift: [.7 kx, -14]
+          column_net: COL3
+
+    # board components
+    mcu:
+      anchor:
+        - ref: matrix_innest_bottom
+          affect: xr
+          shift: mcu_padding
+        - ref: matrix_middle_number
+          affect: y
+          shift: (ky-mcu_height)/2
+      rows.mcu:
+      columns.mcu.key:
+        tags: [mcu]
+
+    trackpoint:
+      anchor:
+        aggregate.parts: [thumb_innest_mod, thumb_index_mod]
+        affect: xy
+        shift: [trackpoint_offset, trackpoint_stagger]
+      rows.tp:
+      columns.tp.key:
+        tags: [trackpoint]
+
+outlines:
+  keys:
+    - what: rectangle
+      where: [switch]
+      size: [kx - .5, ky - .5]
+
+  board:
+    - what: polygon
+      fillet: 2
+      points:
+        # top
+        - { ref: matrix_outer_number, shift: [-px/2, py/2] }
+        - { ref: matrix_ring_number, shift: [-px/2, py/2] }
+        - { ref: matrix_middle_number, shift: [-px/2, py/2] }
+        - - { ref: matrix_middle_number, affect: yr, shift: py/2 - .25 }
+          - { ref: matrix_innest_bottom, affect: xr, shift: 17 }
+
+        # right
+        - { ref: matrix_innest_home, affect: y }
+        - { ref: thumb_innest_mod, shift: [px/2, py/2] }
+        - { ref: thumb_innest_mod, shift: [px/2, -py/2] }
+
+        #bottom
+        - { ref: thumb_innest_mod, shift: [-px/2, -py/2] }
+        - { ref: thumb_middle_mod, shift: [px*.9, -py/2 - 3] }
+        - { ref: thumb_ring_mod, shift: [px/2, -py/2] }
+        - { ref: thumb_ring_mod, shift: [-px/2, -py/2] }
+        - { ref: matrix_outer_bottom, shift: [-px/2, -py/2] }
+    - what: polygon
+      operation: subtract
+      points:
+        - { ref: trackpoint_tp_tp, shift: [-4, -trackpoint_bottom_to_stick] }
+        - { ref: trackpoint_tp_tp, shift: [4, -trackpoint_bottom_to_stick] }
+        - { ref: trackpoint_tp_tp, shift: [4, -(trackpoint_bottom_to_stick + 1)] }
+        - { ref: trackpoint_tp_tp, shift: [.5, -(trackpoint_bottom_to_stick + 1)] }
+        - { ref: trackpoint_tp_tp, shift: [.5, -50] }
+        - { ref: trackpoint_tp_tp, shift: [-.5, -50] }
+        - { ref: trackpoint_tp_tp, shift: [-.5, -(trackpoint_bottom_to_stick + 1)] }
+        - { ref: trackpoint_tp_tp, shift: [-4, -(trackpoint_bottom_to_stick + 1)] }
+
+  preview:
+    - board
+    - -keys
+    - what: rectangle
+      where: mcu
+      size: [mcu_width, mcu_height]
+      operation: subtract
+    - what: rectangle
+      where: [trackpoint]
+      size: [trackpoint_width, trackpoint_height]
+      operation: subtract
+
+pcbs.hackbeil:
+  template: kicad8
+  outlines.main.outline: board
+  footprints:
+
+    choc_hotswap:
+      what: choc
+      where: [switch]
+      adjust.rotate: 180
+      params:
+        keycaps: true
+        reverse: true
+        hotswap: true
+        from: "{{column_net}}"
+        to: "{{colrow}}"
+
+    diode top:
+      what: diode
+      where: [[switch, -diode_bottom]]
+      params: { from: "{{colrow}}", to: "{{row_net}}" }
+      adjust.shift: [7, 7.5]
+
+    diode bottom:
+      what: diode
+      where: [diode_bottom]
+      params: { from: "{{colrow}}", to: "{{row_net}}" }
+      adjust.shift: [7, -7.5]
+
+    nicenano:
+      what: mcu_nice_nano
+      where: mcu
+      params:
+        reversible: true
+        reverse_mount: true
+        include_traces: true
+        include_extra_pins: true
+        P4: ROW0
+        P5: ROW1
+        P6: ROW2
+        P7: ROW3
+        P8: ROW4
+        P16: COL0
+        P14: COL1
+        P15: COL2
+        P18: COL3
+        P19: COL4
+        P20: COL5
+
+    power slider:
+      what: slider_reversible
+      where: mcu
+      adjust:
+        shift: [0, mcu_height/2 - .5]
+      params:
+        reverse: true
+        side: 'B'
+        from: switch_from
+        to: RAW
+
+    battery:
+      what: battery
+      where: mcu
+      adjust:
+        shift: [0, mcu_height/2]
+        rotate: -90
+      params:
+        RAW: switch_from
+
+    niceview:
+      what: display_nice_view
+      where: mcu
+      adjust.shift: [0, -2.54]
+      params:
+        invert_jumpers_position: true
+        side: B
+        reversible: true
+        include_traces: true
+        MOSI: P2
+        SCK: P3
+        CS: P10
+
+    trackpoint header:
+      what: trackpoint_header
+      where: thumb_index_mod
+      adjust.shift: [-3kx, 0]
+      params:
+        SCL: P06
+        SDA: P08
+        RST: P08
+
+    trackpoint joystick:
+      what: trackpoint_joystick
+      where: [trackpoint]
+
+    branding:
+      what: text
+      where:
+        ref: matrix_inner_number
+        shift: [0, py/2 + 1]
+        rotate: 90
+      params:
+        text: "/'hak,baıl/"
+        knockout: true
+        sides: ['F', 'B']
+        fontsize: 2
+
+    jlcpcb order number:
+      what: text
+      where:
+        ref: matrix_index_bottom
+        rotate: 90
+        shift: [0, -py/2]
+      params:
+        fontsize: .85
+        text: "JLCJLCJLCJLC"
