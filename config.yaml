@@ -232,17 +232,19 @@ pcbs.hackbeil:
         reverse_mount: true
         include_traces: true
         include_extra_pins: true
-        P4: ROW0
-        P5: ROW1
+        show_silk_labels: false
+        show_instructions: false
+        P8: ROW0
+        P7: ROW1
         P6: ROW2
-        P7: ROW3
-        P8: ROW4
-        P16: COL0
-        P14: COL1
-        P15: COL2
-        P18: COL3
-        P19: COL4
-        P20: COL5
+        P5: ROW3
+        P4: ROW4
+        P20: COL0
+        P19: COL1
+        P18: COL2
+        P15: COL3
+        P14: COL4
+        P16: COL5
 
     power slider:
       what: slider_reversible
