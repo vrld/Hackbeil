@@ -269,20 +269,21 @@ pcbs.hackbeil:
     niceview:
       what: display_nice_view
       where: mcu
-      adjust.shift: [0, -2.54]
+      adjust.shift: [0, -4.7]
       params:
-        invert_jumpers_position: true
-        side: B
         reversible: true
-        include_traces: true
         MOSI: P2
         SCK: P3
         CS: P10
 
     trackpoint header:
       what: trackpoint_header
-      where: thumb_index_mod
-      adjust.shift: [-3kx, 0]
+      where:
+        ref: matrix_middle_bottom
+        affect: xy
+      adjust:
+        shift: [0, -.75ky]
+        rotate: -90
       params:
         SCL: P06
         SDA: P08
@@ -307,9 +308,11 @@ pcbs.hackbeil:
     jlcpcb order number:
       what: text
       where:
-        ref: matrix_index_bottom
-        rotate: 90
-        shift: [0, -py/2]
+        aggregate.parts:
+          - matrix_outer_bottom
+          - thumb_ring_mod
+        shift: [-px/2 + 1.5, -py/2 + 1.5]
+        rotate: 51
       params:
-        fontsize: .85
+        fontsize: 1
         text: "JLCJLCJLCJLC"
