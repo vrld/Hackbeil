@@ -108,6 +108,7 @@ points:
           splay: -32
           shift: [.7 kx, -14]
           column_net: COL3
+          tags: [switch, extrawurst]
 
     # board components
     mcu:
@@ -199,17 +200,29 @@ pcbs.hackbeil:
         from: "{{column_net}}"
         to: "{{colrow}}"
 
-    diode top:
+    diode left:
       what: diode
-      where: [[switch, -diode_bottom]]
-      params: { from: "{{colrow}}", to: "{{row_net}}" }
-      adjust.shift: [7, 7.5]
+      where: [switch]
+      params: { from: "{{colrow}}", to: "{{row_net}}", side: F }
+      adjust:
+        shift: [8.5, 3]
+        rotate: -90
 
-    diode bottom:
+    diode right except thumb:
       what: diode
-      where: [diode_bottom]
-      params: { from: "{{colrow}}", to: "{{row_net}}" }
-      adjust.shift: [7, -7.5]
+      where: [[switch, -extrawurst]]
+      params: { from: "{{colrow}}", to: "{{row_net}}", side: B }
+      adjust:
+        shift: [-8.5, 3]
+        rotate: 90
+
+    diode right thumb:
+      what: diode
+      where: [[switch, extrawurst]]
+      params: { from: "{{colrow}}", to: "{{row_net}}", side: B }
+      adjust:
+        shift: [-.55px, -5]
+        rotate: 90
 
     nicenano:
       what: mcu_nice_nano
