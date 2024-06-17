@@ -310,7 +310,8 @@ module.exports = {
       (primitives
         (gr_poly (pts
           (xy -0.65 -0.625) (xy 0.5 -0.625) (xy 0.5 0.625) (xy -0.65 0.625) (xy -0.15 0)
-      ) (width 0) (fill yes))
+          ) (width 0) (fill yes)
+        )
     ))
 
     ${''/* Jumper Pads - Front Right */}

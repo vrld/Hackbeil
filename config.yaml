@@ -274,7 +274,7 @@ pcbs.hackbeil:
         reversible: true
         MOSI: P2
         SCK: P3
-        CS: P10
+        CS: P9
 
     trackpoint header:
       what: trackpoint_header
@@ -285,9 +285,9 @@ pcbs.hackbeil:
         shift: [0, -.75ky]
         rotate: -90
       params:
-        SCL: P06
-        SDA: P08
-        RST: P08
+        SCL: P1
+        SDA: P0
+        RST: P10
 
     trackpoint joystick:
       what: trackpoint_joystick
