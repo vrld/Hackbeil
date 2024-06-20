@@ -235,17 +235,35 @@ pcbs.hackbeil:
         include_extra_pins: false
         show_silk_labels: false
         show_instructions: false
-        P8: ROW0
-        P7: ROW1
-        P6: ROW2
-        P5: ROW3
-        P4: ROW4
-        P20: COL0
-        P19: COL1
-        P18: COL2
-        P15: COL3
-        P14: COL4
-        P16: COL5
+        only_required_jumpers: true
+
+        # pins toward the board edge
+        P1: NV_MOSI
+        P0: NV_SCK
+        # GND
+        # GND
+        P2: NV_CS
+        P3: ""  # unused -- LEDs?
+        P4: TP_SCL
+        P5: TP_RST
+        P6: TP_SDA
+        P7: COL4
+        P8: COL5
+        P9: ROW4
+
+        # pins toward the keys
+        # B+
+        # GND
+        # RST
+        # 3V3
+        P21: COL0
+        P20: COL1
+        P19: COL2
+        P18: COL3
+        P15: ROW0
+        P14: ROW1
+        P16: ROW2
+        P10: ROW3
 
     power slider:
       what: slider_reversible
@@ -273,9 +291,9 @@ pcbs.hackbeil:
       adjust.shift: [0, -4.7]
       params:
         reversible: true
-        MOSI: P2
-        SCK: P3
-        CS: P9
+        MOSI: NV_MOSI
+        SCK: NV_SCK
+        CS: NV_CS
 
     trackpoint header:
       what: trackpoint_header
@@ -286,9 +304,9 @@ pcbs.hackbeil:
         shift: [0, -.75ky]
         rotate: -90
       params:
-        SCL: P1
-        SDA: P0
-        RST: P10
+        SCL: TP_SCL
+        SDA: TP_SDA
+        RST: TP_RST
 
     trackpoint joystick:
       what: trackpoint_joystick
