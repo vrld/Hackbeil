@@ -76,12 +76,12 @@ module.exports = {
     points.pins = nets.map((_, i) => ({ x: x(i), y: 16.7 }));
     points.jumpers_near = points.pins.map(({ x }) => ({ x, y: 14.8 }));
     points.jumpers_far = points.jumpers_near.map(({ x, y }) => ({ x, y: y - .8 }));
-    points.courtyard = [{ x: -6.88, y: 14.9 }, { x: -6.82, y: 18.45 }];
-    points.silk = [{ x: x(-.5), y: 15.37 }, { x: x(4.5), y: 18.03 }];
+    points.courtyard = [{ x: -6.88, y: 14.9 }, { x: 6.82, y: 18.45 }];
+    points.silk = [{ x: x(-.5), y: 15.45 }, { x: x(4.5), y: 17.9 }];
     points.vias = [
-      { x: points.jumpers_near[0].x + 1.13, y: points.jumpers_far[0].y, net_index: p.MOSI.index, ref: points.jumpers_far[0] },
-      { x: points.jumpers_far[1].x + 1.13, y: points.jumpers_far[1].y, net_index: p.SCK.index, ref: points.jumpers_far[1] },
-      { x: points.jumpers_near[3].x - 1.13, y: points.jumpers_near[3].y, net_index: p.GND.index, ref: points.jumpers_far[3] },
+      { x: points.jumpers_near[0].x + 1.2, y: points.jumpers_far[0].y, net_index: p.MOSI.index, ref: points.jumpers_far[0] },
+      { x: points.jumpers_far[1].x + 1.2, y: points.jumpers_far[1].y, net_index: p.SCK.index, ref: points.jumpers_far[1] },
+      { x: points.jumpers_near[3].x - 1.2, y: points.jumpers_near[3].y, net_index: p.GND.index, ref: points.jumpers_far[3] },
       { x: points.jumpers_near[4].x, y: points.jumpers_far[4].y - 1.11, net_index: p.CS.index, ref: points.jumpers_far[4] },
     ];
 
@@ -116,7 +116,7 @@ module.exports = {
       p.include_silkscreen ? rect(points.silk, "F.SilkS") : '',
 
       ...points.pins.filter(_ => p.include_labels).map(({ x, y }, i) =>
-        `(fp_text user "${nets[i]}" ${at({ x, y: y + 3, r: 90 })} (layer F.SilkS) (effects (font (size .9 .9) (thickness .15))))`),
+        `(fp_text user "${nets[i]}" ${at({ x, y: y + 3, r: 90 })} (layer F.SilkS) (effects (font (size 1 1) (thickness .15))))`),
 
       ...nets.filter(_ => p.reversible).map((net, i) => net == "VCC" ? '' : jumper("F", i, p[net], p.local_net(i), 5)),
     ].filter(_ => p.reversible || p.side == "F");
@@ -126,7 +126,7 @@ module.exports = {
       p.include_silkscreen ? rect(points.silk, "B.SilkS") : '',
 
       ...points.pins.filter(_ => p.include_labels).map(({ x, y }, i) =>
-        `(fp_text user "${nets[i]}" ${at({ x, y: y + 3, r: 90 })} (layer B.SilkS) (effects (font (size .9 .9) (thickness .15)) (justify mirror)))`),
+        `(fp_text user "${nets[i]}" ${at({ x, y: y + 3.2, r: 90 })} (layer B.SilkS) (effects (font (size 1 1) (thickness .15)) (justify mirror)))`),
 
       ...nets.filter(_ => p.reversible).map((net, i) => net == "VCC" ? '' : jumper("B", 4 - i, p[net], p.local_net(4 - i), 15)),
     ].filter(_ => p.reversible || p.side == "B");

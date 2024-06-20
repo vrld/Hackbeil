@@ -10,10 +10,10 @@ module.exports = {
         ${p.at /* parametric position */}
 
         ${''/* pin names */}
-        (fp_text user + (at 0 6.3 ${p.rot + 90}) (layer F.SilkS) (effects (font (size 0.8 0.8) (thickness 0.15))))
-        (fp_text user - (at 0 -6.3 ${p.rot + 90}) (layer F.SilkS) (effects (font (size 0.8 0.8) (thickness 0.15))))
-        (fp_text user + (at 0 6.3 ${p.rot + 90}) (layer B.SilkS) (effects (font (size 0.8 0.8) (thickness 0.15))))
-        (fp_text user - (at 0 -6.3 ${p.rot + 90}) (layer B.SilkS) (effects (font (size 0.8 0.8) (thickness 0.15))))
+        (fp_text user + (at 0 6.3 ${p.rot + 90}) (layer F.SilkS) (effects (font (size 1 1) (thickness 0.15))))
+        (fp_text user - (at 0 -6.3 ${p.rot + 90}) (layer F.SilkS) (effects (font (size 1 1) (thickness 0.15))))
+        (fp_text user + (at 0 6.3 ${p.rot + 90}) (layer B.SilkS) (effects (font (size 1 1) (thickness 0.15))))
+        (fp_text user - (at 0 -6.3 ${p.rot + 90}) (layer B.SilkS) (effects (font (size 1 1) (thickness 0.15))))
 
 
         ${''/* pins */}

@@ -3,7 +3,7 @@ module.exports = {
     text: '',
     sides: ['F'],
     knockout: false,
-    fontsize: 0.8
+    fontsize: 1
   },
   body: p => [
     '(module lib:text (layer F.Cu) (tedit 648E0265)',

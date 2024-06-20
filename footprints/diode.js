@@ -1,37 +1,32 @@
+const silkscreen = (side) => `
+  (fp_line (start -.5 0) (end -.3 0) (layer ${side}.SilkS) (width .15))
+  (fp_line (start .3 0) (end .5 0) (layer ${side}.SilkS) (width .15))
+  (fp_line (start -.3 -.3) (end -.3 .3) (layer ${side}.SilkS) (width .15))
+  (fp_poly (pts (xy -.3 0) (xy .3 .3) (xy .3 -.3)) (layer ${side}.SilkS) (width .15) (fill none))
+`;
+
+const pads = (side, {from, to, rot}, n) => `
+  (pad ${(n||0) + 1} smd rect (at -1.65 0 ${rot}) (size 1.5 1.2) (layers ${side}.Cu ${side}.Paste ${side}.Mask) ${to.str})
+  (pad ${(n||0) + 2} smd rect (at 1.65 0 ${rot}) (size 1.5 1.2) (layers ${side}.Cu ${side}.Paste ${side}.Mask) ${from.str})
+`;
+
 module.exports = {
   params: {
     designator: 'D',
+    sides: ["F", "B"],
     from: undefined,
     to: undefined,
-    side: 'F',
   },
-  body: p => {
-    const anode_pos = p.side == 'F' ? .3 : -.3;
-    const diode_triangle = `
-      (fp_line (start ${-anode_pos} -.3) (end ${-anode_pos} .3) (layer ${p.side}.SilkS) (width .1))
-      (fp_poly (pts (xy ${-anode_pos} 0) (xy ${anode_pos} .3) (xy ${anode_pos} -.3)) (layer ${p.side}.SilkS) (width .1) (fill none))
-    `;
-
-    const anode = p.side == 'F' ? p.from.str : p.to.str;
-    const cathode = p.side == 'F' ? p.to.str : p.from.str;
-
-    return `
+  body: p => `
     (module lib:smd_diode (layer F.Cu) (tedit 5B24D78E)
         ${p.at /* parametric position */}
 
         ${'' /* footprint reference */}
-        (fp_text reference "${p.ref}" (at 0 0) (layer ${p.side}.SilkS) ${p.ref_hide} (effects (font (size 1.27 1.27) (thickness 0.15))))
-        (fp_text value "" (at 0 0) (layer ${p.side}.SilkS) hide (effects (font (size 1.27 1.27) (thickness 0.15))))
-
-        ${''/* diode symbols */}
-        (fp_line (start -.8 0) (end -.3 0) (layer ${p.side}.SilkS) (width .1))
-        (fp_line (start .3 0) (end .8 0) (layer ${p.side}.SilkS) (width .1))
-        ${diode_triangle}
-
-        ${''/* SMD pads on both sides */}
-        (pad 1 smd rect (at -1.65 0 ${p.rot}) (size 0.9 1.2) (layers ${p.side}.Cu ${p.side}.Paste ${p.side}.Mask) ${cathode})
-        (pad 2 smd rect (at 1.65 0 ${p.rot}) (size 0.9 1.2) (layers ${p.side}.Cu ${p.side}.Paste ${p.side}.Mask) ${anode})
-    )
+        (fp_text reference "${p.ref}" (at 0 0) (layer F.SilkS) ${p.ref_hide} (effects (font (size 1.27 1.27) (thickness 0.15))))
+        (fp_text value "" (at 0 0) (layer F.SilkS) hide (effects (font (size 1.27 1.27) (thickness 0.15))))
+        ${p.sides.map(silkscreen).join('')}
+        ${p.sides.map((s, i) => pads(s, p, 2*i)).join('')})
+    (via (at ${p.eaxy(-1.65, 0)}) (size .8) (drill .6) (layers "F.Cu" "B.Cu") (net ${p.from.index}))
+    (via (at ${p.eaxy(1.65, 0)}) (size .8) (drill .6) (layers "F.Cu" "B.Cu") (net ${p.to.index}))
     `
-  }
 }
