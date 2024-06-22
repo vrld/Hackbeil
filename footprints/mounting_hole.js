@@ -22,14 +22,10 @@ module.exports = {
     ring_width: 1,
   },
   body: p => `
-  (footprint "ceoloide:mounting_hole_npth"
+  (module "hackbeil:mounting_hole"
     (layer "${p.side}.Cu")
     ${p.at}
-    (property "Reference" "${p.ref}"
-      (at 0 2.55 ${p.r})
-      (layer "${p.side}.SilkS")
-      ${p.ref_hide}
-      (effects (font (size 1 1) (thickness 0.15))))
+    (property "Reference" "${p.ref}" (at 0 2.55 ${p.r}) (layer "${p.side}.SilkS") ${p.ref_hide} (effects (font (size 1 1) (thickness 0.15))))
     (pad "" thru_hole circle
       (at 0 0 ${p.r})
       (size ${drill_size(p) + p.ring_width} ${drill_size(p) + p.ring_width})

@@ -1,3 +1,8 @@
+const layer = (side, {knockout}) => knockout ? `(layer ${side}.SilkS knockout)` : `(layer ${side}.SilkS)`;
+const font = ({fontsize}) => `(font (size ${fontsize} ${fontsize}) (thickness .15))`
+const justify = (side) => side == 'B' ? ' (justify mirror)' : ''
+const effects = (side, p) => `(effects ${font(p)}${justify(side)})`
+
 module.exports = {
   params: {
     text: '',
@@ -5,10 +10,5 @@ module.exports = {
     knockout: false,
     fontsize: 1
   },
-  body: p => [
-    '(module lib:text (layer F.Cu) (tedit 648E0265)',
-    p.at,
-    ...p.sides.map(side => `(fp_text user "${p.text}" (at 0 0 ${p.rot + 90}) (layer ${side}.SilkS ${p.knockout ? "knockout" : ""}) (effects (font (size ${p.fontsize} ${p.fontsize}) (thickness 0.15)) ${side === 'F' ? "" : "(justify mirror)"} ))`),
-    ')',
-  ].join('')
+  body: p => p.sides.map(side => `(gr_text "${p.text}" ${p.at} ${layer(side, p)} ${effects(side, p)})`).join('\n')
 }

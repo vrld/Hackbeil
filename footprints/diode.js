@@ -18,15 +18,15 @@ module.exports = {
     to: undefined,
   },
   body: p => `
-    (module lib:smd_diode (layer F.Cu) (tedit 5B24D78E)
+    (module hackbeil:diode (layer F.Cu)
         ${p.at /* parametric position */}
 
         ${'' /* footprint reference */}
-        (fp_text reference "${p.ref}" (at 0 0) (layer F.SilkS) ${p.ref_hide} (effects (font (size 1.27 1.27) (thickness 0.15))))
-        (fp_text value "" (at 0 0) (layer F.SilkS) hide (effects (font (size 1.27 1.27) (thickness 0.15))))
+        (property Reference "${p.ref}" (at 0 0) (layer ${p.sides[0]}.SilkS) ${p.ref_hide} (effects (font (size 1.27 1.27) (thickness 0.15))))
+
         ${p.sides.map(silkscreen).join('')}
         ${p.sides.map((s, i) => pads(s, p, 2*i)).join('')})
-    (via (at ${p.eaxy(-1.65, 0)}) (size .8) (drill .6) (layers "F.Cu" "B.Cu") (net ${p.from.index}))
-    (via (at ${p.eaxy(1.65, 0)}) (size .8) (drill .6) (layers "F.Cu" "B.Cu") (net ${p.to.index}))
+    (via (at ${p.eaxy(-1.75, 0)}) (size .8) (drill .6) (layers "F.Cu" "B.Cu") (net ${p.from.index}))
+    (via (at ${p.eaxy(1.75, 0)}) (size .8) (drill .6) (layers "F.Cu" "B.Cu") (net ${p.to.index}))
     `
 }

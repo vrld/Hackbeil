@@ -371,50 +371,15 @@ module.exports = {
         `
       let socket_row = socket_row_base;
       if (p.reversible && (row_num < 4 || !p.only_required_jumpers)) {
-        socket_row += socket_row_vias;
+        if (p.include_traces) {
+          socket_row += socket_row_vias;
+        }
         if (p.use_rectangular_jumpers) {
           socket_row += socket_row_rectangular_jumpers
         } else {
           socket_row += socket_row_chevron_jumpers
         }
       }
-      if (show_silk_labels == true) {
-        if (p.reversible || p.show_silk_labels_on_both_sides || p.side == 'F') {
-          // Silkscreen labels - front
-          if (row_num != 10 || (!p.include_extra_pins && p.reversible) || (invert_pins && !p.reversible)) {
-            socket_row += `
-    (fp_text user "${net_silk_front_left}" (at -${p.reversible && (row_num < 4 || !p.only_required_jumpers) ? (net_silk_front_left.length > 2 ? 1.45 : 2.04) : 4.47} ${-12.7 + row_offset_y} ${p.r}) (layer "F.SilkS")
-      (effects (font (size .9 .9) (thickness 0.12)))
-    )
-            `
-          }
-          if (row_num != 10 || (!p.include_extra_pins && p.reversible) || (!invert_pins && !p.reversible)) {
-            socket_row += `
-    (fp_text user "${net_silk_front_right}" (at ${p.reversible && (row_num < 4 || !p.only_required_jumpers) ? (net_silk_front_right.length > 2 ? 1.45 : 2.04) : 4.47} ${-12.7 + row_offset_y} ${p.r}) (layer "F.SilkS")
-      (effects (font (size .9 .9) (thickness 0.12)))
-    )
-            `
-          }
-        }
-        if (p.reversible && !p.include_extra_pins || p.show_silk_labels_on_both_sides || p.side == 'B') {
-          // Silkscreen labels - back
-          if (row_num != 10 || (!p.include_extra_pins && p.reversible) || (invert_pins && !p.reversible)) {
-            socket_row += `
-    (fp_text user "${net_silk_back_left}" (at -${p.reversible && (row_num < 4 || !p.only_required_jumpers) ? (net_silk_back_left.length > 2 ? 1.45 : 2.04) : 4.47} ${-12.7 + row_offset_y} ${p.r}) (layer "B.SilkS")
-      (effects (font (size .9 .9) (thickness 0.12)) (justify mirror))
-    )
-            `
-          }
-          if (row_num != 10 || (!p.include_extra_pins && p.reversible) || (!invert_pins && !p.reversible)) {
-            socket_row += `
-    (fp_text user "${net_silk_back_right}" (at ${p.reversible && (row_num < 4 || !p.only_required_jumpers) ? (net_silk_back_right.length > 2 ? 1.45 : 2.04) : 4.47} ${-12.7 + row_offset_y} ${p.r}) (layer "B.SilkS")
-      (effects (font (size .9 .9) (thickness 0.12)) (justify mirror))
-    )
-            `
-          }
-        }
-      }
-
       if (show_via_labels && (p.reversible && (row_num < 4 || !p.only_required_jumpers))) {
         socket_row += `
     ${''/* Via Labels - Front */}
@@ -503,15 +468,10 @@ module.exports = {
     }
 
     const common_top = `
-  (footprint "ceoloide:mcu_nice_nano"
+  (module "hackbeil:mcu_nice_nano"
     (layer "${p.side}.Cu")
     ${p.at}
-    (property "Reference" "${p.ref}"
-      (at 0 -15 ${p.r})
-      (layer "${p.side}.SilkS")
-      ${p.ref_hide}
-      (effects (font (size 1 1) (thickness 0.15)))
-    )
+    (property "Reference" "${p.ref}" (at 0 -15 ${p.r}) (layer "${p.side}.SilkS") ${p.ref_hide} (effects (font (size 1 1) (thickness 0.15))))
     (attr exclude_from_pos_files exclude_from_bom)
 
     ${''/* USB socket outline */}

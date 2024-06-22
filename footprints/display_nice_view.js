@@ -104,7 +104,7 @@ module.exports = {
     };
 
     const top = [
-      'footprint "ceoloide:display_nice_view"',
+      'module "hackbeil:nice_view"',
       `(layer ${p.side}.Cu)`,
       p.at, /* parametric position */
       `(property "Reference" "${p.ref}" (at 0 20 ${p.r}) (layer "${p.side}.SilkS") ${p.ref_hide} (effects (font (size 1 1) (thickness 0.15))))`,
@@ -116,7 +116,7 @@ module.exports = {
       p.include_silkscreen ? rect(points.silk, "F.SilkS") : '',
 
       ...points.pins.filter(_ => p.include_labels).map(({ x, y }, i) =>
-        `(fp_text user "${nets[i]}" ${at({ x, y: y + 3, r: 90 })} (layer F.SilkS) (effects (font (size 1 1) (thickness .15))))`),
+        `(fp_text user "${nets[i]}" ${at({ x, y: y + 1.5, r: 90 })} (layer F.SilkS) (effects (font (size 1 1) (thickness .15)) (justify right)))`),
 
       ...nets.filter(_ => p.reversible).map((net, i) => net == "VCC" ? '' : jumper("F", i, p[net], p.local_net(i), 5)),
     ].filter(_ => p.reversible || p.side == "F");
@@ -126,7 +126,7 @@ module.exports = {
       p.include_silkscreen ? rect(points.silk, "B.SilkS") : '',
 
       ...points.pins.filter(_ => p.include_labels).map(({ x, y }, i) =>
-        `(fp_text user "${nets[i]}" ${at({ x, y: y + 3.2, r: 90 })} (layer B.SilkS) (effects (font (size 1 1) (thickness .15)) (justify mirror)))`),
+        `(fp_text user "${nets[i]}" ${at({ x, y: y + 1.5, r: 90 })} (layer B.SilkS) (effects (font (size 1 1) (thickness .15)) (justify left mirror)))`),
 
       ...nets.filter(_ => p.reversible).map((net, i) => net == "VCC" ? '' : jumper("B", 4 - i, p[net], p.local_net(4 - i), 15)),
     ].filter(_ => p.reversible || p.side == "B");
@@ -192,7 +192,7 @@ module.exports = {
       ...holes,
       ...bottom,
       ')',
-      ...segments.filter(_ => p.reversible),
+      ...segments.filter(_ => p.reversible && p.include_traces),
     ].join('');
   }
 }

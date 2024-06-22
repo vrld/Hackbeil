@@ -196,15 +196,10 @@ module.exports = {
   },
   body: p => {
     const common_top = `
-  (footprint "ceoloide:switch_choc_v1_v2"
+  (module "hackbeil:switch_choc_v1_v2"
     (layer "${p.side}.Cu")
     ${p.at}
-    (property "Reference" "${p.ref}"
-      (at 0 8.8 ${p.r})
-      (layer "${p.side}.SilkS")
-      ${p.ref_hide}
-      (effects (font (size 1 1) (thickness 0.15)))
-    )
+    (property "Reference" "${p.ref}" (at 0 8.8 ${p.r}) (layer "${p.side}.SilkS") ${p.ref_hide} (effects (font (size 1 1) (thickness 0.15))))
     (attr exclude_from_pos_files exclude_from_bom${p.allow_soldermask_bridges ? ' allow_soldermask_bridges' : ''})
 
     ${''/* middle shaft hole */}
