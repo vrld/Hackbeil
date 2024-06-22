@@ -30,7 +30,6 @@ points:
     matrix:
       anchor.shift: [130, -130]
 
-      # chock spacing
       key:
         padding: ky
         spread: kx
@@ -76,12 +75,12 @@ points:
       rows:
         bottom.row_net: ROW3
         home:
-          tags: [switch]
+          tags: [switch, diode-below]
           row_net: ROW2
         top.row_net: ROW1
         number:
           row_net: ROW0
-          tags: [switch]
+          tags: [switch, diode-below]
 
     # thumb cluster with four modifier keys
     thumb:
@@ -160,7 +159,7 @@ outlines:
 
   __outline:
     - what: polygon
-      fillet: 2
+      fillet: 1.5
       points:
         # top
         - { ref: matrix_outer_number, shift: [-px/2, py/2] }
@@ -209,9 +208,17 @@ pcbs.hackbeil:
         from: "{{column_net}}"
         to: "{{colrow}}"
 
-    diode:
+    diode below:
       what: diode
-      where: [[switch, -extrawurst]]
+      where: [[switch, -extrawurst, diode-below]]
+      params: { from: "{{colrow}}", to: "{{row_net}}" }
+      adjust:
+        shift: [.0, -.6ky]
+        rotate: 180
+
+    diode above:
+      what: diode
+      where: [[switch, -extrawurst, -diode-below]]
       params: { from: "{{colrow}}", to: "{{row_net}}" }
       adjust:
         shift: [.0, .25ky]
@@ -222,7 +229,7 @@ pcbs.hackbeil:
       where: [[switch, extrawurst]]
       params: { from: "{{colrow}}", to: "{{row_net}}" }
       adjust:
-        shift: [.47kx, 2]
+        shift: [.35kx, 4.5]
         rotate: -90
 
     nicenano:
@@ -231,9 +238,8 @@ pcbs.hackbeil:
       params:
         reversible: true
         reverse_mount: true
-        include_traces: true
+        include_traces: false
         include_extra_pins: false
-        show_silk_labels: false
         show_instructions: false
         only_required_jumpers: true
 
@@ -290,6 +296,7 @@ pcbs.hackbeil:
       where: mcu
       adjust.shift: [0, -4.7]
       params:
+        include_traces: false
         reversible: true
         MOSI: NV_MOSI
         SCK: NV_SCK
@@ -315,14 +322,26 @@ pcbs.hackbeil:
     branding:
       what: text
       where:
-        ref: matrix_inner_number
-        shift: [0, py/2 + 1]
+        ref: mcu_mcu_mcu
+        shift: [-.7, -1.5]
         rotate: 90
       params:
         text: "/'hak,baıl/"
         knockout: true
         sides: ['F', 'B']
-        fontsize: 2
+        fontsize: 3.2
+
+    revision:
+      what: text
+      where:
+        ref: mcu_mcu_mcu
+        shift: [2.9, 10.2]
+        rotate: 90
+      params:
+        text: "rev.1"
+        knockout: false
+        sides: ['F', 'B']
+        fontsize: 1
 
     jlcpcb order number:
       what: text
@@ -331,7 +350,7 @@ pcbs.hackbeil:
           - matrix_outer_bottom
           - thumb_ring_mod
         shift: [-kx/2 + 1.5, -ky/2 + 1.5]
-        rotate: 51
+        rotate: -40.3
       params:
         fontsize: 1
         text: "JLCJLCJLCJLC"
