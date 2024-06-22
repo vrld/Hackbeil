@@ -184,12 +184,13 @@ outlines:
     - __outline
     - what: polygon
       operation: subtract
-      fillet: 1.3
+      fillet: .5
       points:
-        - { ref: trackpoint_tp_tp, shift: [-5, -trackpoint_bottom_to_stick] }
-        - { ref: trackpoint_tp_tp, shift: [5, -trackpoint_bottom_to_stick] }
-        - { ref: trackpoint_tp_tp, shift: [0, -17.8] }
-        - { ref: trackpoint_tp_tp, shift: [0, -18.2] }
+        # moved points by eye so that board outline matches cutout for roller encoder
+        - { ref: trackpoint_tp_tp, shift: [-6.9, -18] }
+        - { ref: trackpoint_tp_tp, shift: [-7.7, 2.4-trackpoint_bottom_to_stick ] }  # by eye
+        - { ref: trackpoint_tp_tp, shift: [7.3, 1.1-trackpoint_bottom_to_stick] }
+        - { ref: trackpoint_tp_tp, shift: [5, -20] }
 
 pcbs.hackbeil:
   template: kicad8
@@ -248,13 +249,13 @@ pcbs.hackbeil:
         P0: NV_SCK
         # GND
         # GND
-        P2: NV_CS
-        P3: ""  # unused -- LEDs?
+        P2: COL5 # NV_CS
+        P3: ""  # unused
         P4: TP_SCL
         P5: TP_RST
         P6: TP_SDA
         P7: COL4
-        P8: COL5
+        P8: NV_CS  # COL5
         P9: ROW4
 
         # pins toward the keys
@@ -263,11 +264,11 @@ pcbs.hackbeil:
         # RST
         # 3V3
         P21: COL0
-        P20: COL1
-        P19: COL2
-        P18: COL3
-        P15: ROW0
-        P14: ROW1
+        P20: COL2  # COL1
+        P19: COL1  # COL2
+        P18: ROW0  # COL3
+        P15: ROW1  # ROW0
+        P14: COL3  # ROW1
         P16: ROW2
         P10: ROW3
 
@@ -318,6 +319,18 @@ pcbs.hackbeil:
     trackpoint joystick:
       what: trackpoint_joystick
       where: [trackpoint]
+
+    evqwgd001 encoder:
+      what: EVQWGD001
+      where: [trackpoint]
+      adjust:
+        rotate: -95
+        shift: [1, -2]
+      params:
+        S1: TP_SDA
+        S2: GND
+        A: TP_RST
+        B: TP_SCL
 
     branding:
       what: text
