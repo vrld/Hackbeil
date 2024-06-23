@@ -4,13 +4,21 @@ meta:
   engine: "4.1.0"
 
 units:
-  # we want choc keys
+  # choc spacing
   kx: cx
   ky: cy
+
+  # size of the switch hole in the top plate
+  hx: 13.6
+  hy: 13.8
 
   # 4 mm padding between keys and board edge
   px: kx + 4
   py: ky + 4
+
+  # wall padding
+  wx: kx + 7
+  wy: ky + 7
 
   # controller size and distance to the keys
   mcu_height: 34
@@ -22,6 +30,22 @@ units:
   trackpoint_stagger: 7
   trackpoint_offset: -.5
   trackpoint_bottom_to_stick: 11
+  trackpoint_joystick_radius: 3.5
+
+  # case parameters
+  bottom_height: 2
+  bottom_to_pcb: 2
+  pcb_height: 1.6
+
+  # ref: https://keycapsss.com/media/image/12/7a/49/kailh-choc-switch-low-profile-dimensions.png
+  choc_bottom_to_lip: 3
+  choc_bottom_to_nose: 2.2 - 1.3
+  choc_bottom_to_rim: 2.2
+  choc_rim_height: 0.8
+
+  case_height: bottom_height + bottom_to_pcb + pcb_height + choc_bottom_to_lip
+  mounting_hole_radius: 1
+  standoff_radius: 2
 
 points:
   zones:
@@ -152,12 +176,7 @@ points:
         top:
 
 outlines:
-  keys:
-    - what: rectangle
-      where: [switch]
-      size: [kx - .5, ky - .5]
-
-  __outline:
+  _inner_outline:
     - what: polygon
       fillet: 1.5
       points:
@@ -166,7 +185,7 @@ outlines:
         - { ref: matrix_ring_number, shift: [-px/2, py/2] }
         - { ref: matrix_middle_number, shift: [-px/2, py/2] }
         - - { ref: matrix_middle_number, affect: yr, shift: py/2 - .25 }
-          - { ref: matrix_innest_bottom, affect: xr, shift: 17 }
+          - { ref: matrix_innest_bottom, affect: xr, shift: px/2 + 7 }
 
         # right
         - { ref: matrix_innest_home, affect: y }
@@ -180,8 +199,31 @@ outlines:
         - { ref: thumb_ring_mod, shift: [-px/2, -py/2] }
         - { ref: matrix_outer_bottom, shift: [-px/2, -py/2] }
 
-  board:
-    - __outline
+  _outer_outline:
+    - what: polygon
+      fillet: 1.7
+      points:
+        # top
+        - { ref: matrix_outer_number, shift: [-wx/2, wy/2] }
+        - { ref: matrix_ring_number, shift: [-wx/2, wy/2] }
+        - { ref: matrix_middle_number, shift: [-wx/2, wy/2] }
+        - - { ref: matrix_middle_number, affect: yr, shift: wy/2 - .25 }
+          - { ref: matrix_innest_bottom, affect: xr, shift: wx/2 + 7 }
+
+        # right
+        - { ref: matrix_innest_home, affect: y }
+        - { ref: thumb_innest_mod, shift: [wx/2, wy/2] }
+        - { ref: thumb_innest_mod, shift: [wx/2, -wy/2] }
+
+        #bottom
+        - { ref: thumb_innest_mod, shift: [-wx/2, -wy/2] }
+        - { ref: thumb_middle_mod, shift: [wx*.9, -wy/2 - 3] }
+        - { ref: thumb_ring_mod, shift: [wx/2, -wy/2] }
+        - { ref: thumb_ring_mod, shift: [-wx/2, -wy/2] }
+        - { ref: matrix_outer_bottom, shift: [-wx/2, -wy/2] }
+
+  _board:
+    - _inner_outline
     - what: polygon
       operation: subtract
       fillet: .5
@@ -192,9 +234,72 @@ outlines:
         - { ref: trackpoint_tp_tp, shift: [7.3, 1.1-trackpoint_bottom_to_stick] }
         - { ref: trackpoint_tp_tp, shift: [5, -20] }
 
+  _mounting_holes:
+    - what: circle
+      where: [mounting hole]
+      radius: mounting_hole_radius
+
+  _standoffs:
+    - what: circle
+      where: [mounting hole]
+      radius: standoff_radius
+
+  _keyplate:
+    - _inner_outline
+    # switches
+    - operation: subtract
+      what: rectangle
+      where: [switch]
+      size: [hx, hy]
+      fillet: .5
+    # nice!view header
+    - operation: subtract
+      what: rectangle
+      adjust.shift: [0, -16.7 - 4.7]
+      where: mcu
+      size: [2.54 * 5 + 1, 2.54 + 1]
+      fillet: .5
+    # mcu
+    - operation: subtract
+      what: rectangle
+      adjust.shift: [0, .9]
+      where: mcu
+      size: [21, mcu_height + 2.84]
+      fillet: .5
+
+  keyplate_left:
+    - _keyplate
+    - operation: subtract
+      what: rectangle
+      where: [trackpoint]
+      adjust:
+        rotate: -95
+        shift: [.5, -2]
+      size: [hx+1, hy]
+      fillet: .5
+
+  keyplate_right:
+    - _keyplate
+    - operation: subtract
+      what: circle
+      where: [trackpoint]
+      radius: trackpoint_joystick_radius
+
+  _usb_port_cutout:
+    - what: rectangle
+      adjust.shift: [0, mcu_height/2 + 2]
+      where: mcu
+      size: [13, 7]  # height should be 7
+
 pcbs.hackbeil:
   template: kicad8
-  outlines.main.outline: board
+  outlines.main.outline: _board
+  outlines.keyplate_right:
+    outline: keyplate_right
+    layer: B.Fab
+  outlines.keyplate_left:
+    outline: keyplate_left
+    layer: F.Fab
   footprints:
 
     choc_hotswap:
@@ -371,3 +476,51 @@ pcbs.hackbeil:
     mounting holes:
       what: mounting_hole
       where: [mounting hole]
+
+pcbs.keyplate_left:
+  outlines.main.outline: keyplate_left
+  footprints.mounting holes:
+    what: mounting_hole
+    where: [mounting hole]
+
+pcbs.keyplate_right:
+  outlines.main.outline: keyplate_right
+  footprints.mounting holes:
+    what: mounting_hole
+    where: [mounting hole]
+
+cases:
+  plate_left:
+    - name: keyplate_left
+      extrude: 1.6
+
+  plate_right:
+    - name: keyplate_right
+      extrude: 1.6
+
+  pcb:
+    - name: _board
+      extrude: 1.6
+    - name: _mounting_holes
+      extrude: 2
+      operation: subtract
+
+  _wall:
+    - name: _outer_outline
+      extrude: case_height
+    - name: _inner_outline
+      extrude: case_height
+      operation: subtract
+
+  bottom:
+    - name: _outer_outline
+      extrude: bottom_height
+
+    - what: case
+      name: _wall
+
+    - name: _mounting_holes
+      extrude: bottom_height + bottom_to_pcb + pcb_height
+
+    - name: _standoffs
+      extrude: bottom_height + bottom_to_pcb
