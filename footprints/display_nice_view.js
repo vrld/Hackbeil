@@ -138,7 +138,7 @@ module.exports = {
 
     const bottom = [
       rect([{ x: 5.4, y: 13.4 }, { x: -5.4, y: -11.9 }], 'Dwgs.User'),
-      rect([{ x: 7, y: -18 }, { x: -7, y: -18 }], 'Dwgs.User'),
+      rect([{ x: 7, y: 18 }, { x: -7, y: -18 }], 'Dwgs.User'),
     ];
 
     // segments are not part of the footprint => points in global coordinates
