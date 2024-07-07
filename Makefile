@@ -1,14 +1,14 @@
 .PHONY: all clean watch
 
-SRC=config.yaml
-SRC+=$(wildcard footprints/*)
+SRC=ergogen/config.yaml
+SRC+=$(wildcard ergogen/footprints/*)
 
 all: build/pcbs/hackbeil.kicad_pcb preview
 
 preview: build/pcbs/hackbeil-left.pdf build/pcbs/hackbeil-right.pdf build/outlines/keyplate_left.pdf build/outlines/keyplate_right.pdf
 
 build/pcbs/hackbeil.kicad_pcb: $(SRC)
-	ergogen . -o build
+	ergogen ./ergogen -o build
 
 case: build/cases/bottom.stl build/cases/plate_left.stl build/cases/plate_right.stl build/cases/pcb.stl
 
