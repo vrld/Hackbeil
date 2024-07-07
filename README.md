@@ -6,7 +6,7 @@ My custom 60 key wireless split keyboard. Inspired by [Lily58](https://github.co
 
 ![rendering of the pcb](pcb-render.jpg)
 
-![rendering of the 3d printed case](case-render.jpg)
+![rendering of the 3d printed case](case-render.png)
 
 ## Setup
 
