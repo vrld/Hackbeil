@@ -1,0 +1,1 @@
+The case was designed with onshape. Find the document [here](https://cad.onshape.com/documents/a196e7cfe793f017acaf2613/w/5e54595bcd19ec8f7b065f1a/e/1e5f3f1594b05356b8aebbdb?renderMode=0&uiState=668a79d0463ebf210af3e212).
